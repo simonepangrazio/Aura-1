@@ -1,0 +1,67 @@
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin}
+      POSTGRES_DB: ${POSTGRES_DB:-ai_platform}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  backend:
+    build: 
+      context: ../backend
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-admin}:${POSTGRES_PASSWORD:-admin}@postgres:5432/${POSTGRES_DB:-ai_platform}
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET:-supersecret}
+      - LIVEKIT_URL=${LIVEKIT_URL:-wss://provadirettakit-osvi0lp8.livekit.cloud}
+      - LIVEKIT_API_KEY=${LIVEKIT_API_KEY:-devkey}
+      - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET:-dev_livekit_secret_change_me_32_chars}
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - frontend1
+      - frontend2
+    restart: unless-stopped
+
+  frontend1:
+    # Per ora montiamo i file statici di frontend1
+    image: nginx:alpine
+    volumes:
+      - ../frontend1:/usr/share/nginx/html
+
+  frontend2:
+    build:
+      context: ../frontend2
+      args:
+        NEXT_PUBLIC_API_BASE_URL: /api/v1
+        API_PROXY_ORIGIN: http://backend:8000
+    environment:
+      - API_PROXY_ORIGIN=http://backend:8000
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_data:

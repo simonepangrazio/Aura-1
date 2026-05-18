@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+  --color-background: #05060a;
+  --color-foreground: #ffffff;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100svh;
+    margin: 0;
+    overflow: hidden;
+    background: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  button,
+  input {
+    font: inherit;
+  }
+}
+
+@layer components {
+  .avatar-wave {
+    display: grid;
+    grid-template-columns: repeat(5, 0.7rem);
+    align-items: end;
+    gap: 0.5rem;
+    height: 5rem;
+  }
+
+  .avatar-wave span {
+    display: block;
+    height: 2rem;
+    border-radius: 9999px;
+    background: rgb(207 250 254 / 0.72);
+    animation: avatar-wave 1.4s ease-in-out infinite;
+  }
+
+  .avatar-wave span:nth-child(2) {
+    animation-delay: 0.12s;
+  }
+
+  .avatar-wave span:nth-child(3) {
+    animation-delay: 0.24s;
+  }
+
+  .avatar-wave span:nth-child(4) {
+    animation-delay: 0.36s;
+  }
+
+  .avatar-wave span:nth-child(5) {
+    animation-delay: 0.48s;
+  }
+}
+
+@keyframes avatar-wave {
+  0%,
+  100% {
+    opacity: 0.38;
+    transform: scaleY(0.55);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scaleY(1.45);
+  }
+}
