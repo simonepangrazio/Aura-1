@@ -102,11 +102,10 @@ export default function Dashboard() {
 
         {/* Logo */}
         <button onClick={() => navigate('/')} style={{ display:'flex', alignItems:'center', gap:10, background:'none', border:'none', cursor:'pointer', marginBottom:'2.5rem', padding:'0.25rem 0.5rem' }}>
-          <div style={{ width:36, height:36, borderRadius:'50%', background:'linear-gradient(135deg,#7c3aed,#0891b2)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 0 20px rgba(124,58,237,0.4)', flexShrink:0 }}>
-            <svg viewBox="0 0 20 20" fill="white" width="16" height="16">
-              <circle cx="10" cy="10" r="3.2"/><circle cx="10" cy="3" r="1.6" opacity=".65"/><circle cx="10" cy="17" r="1.6" opacity=".65"/><circle cx="3" cy="10" r="1.6" opacity=".65"/><circle cx="17" cy="10" r="1.6" opacity=".65"/>
-            </svg>
-          </div>
+          <span
+            aria-hidden="true"
+            style={{ width:40, height:40, borderRadius:'0.875rem', backgroundImage:'url(/Logo_Aura_vett.png)', backgroundSize:'170%', backgroundPosition:'center 35%', boxShadow:'0 0 20px rgba(124,58,237,0.4)', flexShrink:0 }}
+          />
           <span style={{ ...syne, fontSize:'1.25rem' }}>
             <span style={{ color:'#fff' }}>AU</span><span style={grad}>RA</span>
           </span>

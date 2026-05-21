@@ -86,11 +86,10 @@ export default function Login() {
         {/* Logo */}
         <div style={{ textAlign:'center', marginBottom:'2.5rem' }}>
           <div style={{ display:'inline-flex', alignItems:'center', gap:'0.75rem', marginBottom:'1.5rem' }}>
-            <div style={{ width:44, height:44, borderRadius:'50%', background:'linear-gradient(135deg,#7c3aed,#0891b2)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 0 30px rgba(124,58,237,0.4)' }}>
-              <svg viewBox="0 0 20 20" fill="white" width="20" height="20">
-                <circle cx="10" cy="10" r="3.2"/><circle cx="10" cy="3" r="1.6" opacity=".65"/><circle cx="10" cy="17" r="1.6" opacity=".65"/><circle cx="3" cy="10" r="1.6" opacity=".65"/><circle cx="17" cy="10" r="1.6" opacity=".65"/>
-              </svg>
-            </div>
+            <span
+              aria-hidden="true"
+              style={{ width:54, height:54, borderRadius:'1rem', backgroundImage:'url(/Logo_Aura_vett.png)', backgroundSize:'170%', backgroundPosition:'center 35%', boxShadow:'0 0 30px rgba(124,58,237,0.4)', flexShrink:0 }}
+            />
             <span style={{ ...syne, fontSize:'1.75rem' }}>
               <span style={{ color:'#fff' }}>AU</span><span style={grad}>RA</span>
             </span>
