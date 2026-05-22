@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const syne = { fontFamily: 'Syne, system-ui, sans-serif', fontWeight: 800, letterSpacing: '-0.02em' }
+const syne = { fontFamily: 'system-ui, sans-serif', fontWeight: 800, letterSpacing: '-0.02em' }
 const grad = { background: 'linear-gradient(135deg,#a78bfa,#22d3ee)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }
 
 const ALL_SERVICES = [
@@ -95,7 +95,7 @@ export default function Dashboard() {
   const openSvc = ALL_SERVICES.find(s => s.id === activeSvc)
 
   return (
-    <div style={{ minHeight: '100vh', background: '#08080e', color: '#fff', fontFamily: 'DM Sans, system-ui, sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: '#08080e', color: '#fff', fontFamily: 'system-ui, sans-serif' }}>
 
       {/* ── SIDEBAR ────────────────────────────────────────── */}
       <aside style={{ position: 'fixed', top: 0, left: 0, bottom: 0, width: 240, background: 'rgba(255,255,255,0.02)', borderRight: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', padding: '1.5rem 1rem', zIndex: 40 }}>

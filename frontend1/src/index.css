@@ -8,7 +8,7 @@
   html { scroll-behavior: smooth; }
 
   body {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: #08080e;
@@ -18,10 +18,14 @@
   }
 
   h1, h2, h3, h4 {
-    font-family: 'Syne', system-ui, sans-serif;
+    font-family: system-ui, sans-serif;
     font-weight: 800;
     line-height: 1.05;
     letter-spacing: -0.02em;
+  }
+
+  code, kbd, samp, pre {
+    font-family: system-ui, sans-serif;
   }
 }
 
@@ -63,6 +67,226 @@
 }
 
 @layer components {
+  .templates-teaser-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+    gap: 3.5rem;
+    align-items: center;
+  }
+
+  .sector-showcase { display: grid; gap: 1rem; min-width: 0; }
+
+  .sector-orbit-card {
+    position: relative;
+    min-height: 430px;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--sector-color) 34%, transparent);
+    border-radius: 1.75rem;
+    background: radial-gradient(circle at 50% 46%, color-mix(in srgb, var(--sector-color) 22%, transparent) 0%, transparent 42%), linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03), 0 24px 80px rgba(0,0,0,0.34);
+  }
+
+  .sector-orbit {
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    width: min(68%, 380px);
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+  }
+
+  .sector-orbit-ring,
+  .sector-orbit-ring::after {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+  }
+
+  .sector-orbit-ring {
+    border: 1px solid color-mix(in srgb, var(--sector-color) 58%, transparent);
+    box-shadow: 0 0 24px color-mix(in srgb, var(--sector-color) 28%, transparent);
+  }
+
+  .sector-orbit-ring::after {
+    content: "";
+    border: 1px dashed rgba(255,255,255,0.08);
+    transform: scale(1.14);
+  }
+
+  .sector-orbit-ring-middle { inset: 13%; border-color: rgba(96,165,250,0.58); }
+  .sector-orbit-ring-inner {
+    inset: 27%;
+    border-color: rgba(255,255,255,0.12);
+    background: radial-gradient(circle, rgba(8,145,178,0.22), rgba(8,8,14,0.4) 68%);
+  }
+
+  .sector-orbit-node {
+    position: absolute;
+    z-index: 3;
+    width: 3.4rem;
+    height: 3.4rem;
+    transform: translate(-50%, -50%);
+    border: 1px solid color-mix(in srgb, var(--sector-color) 70%, white 12%);
+    border-radius: 50%;
+    background: rgba(6, 10, 24, 0.86);
+    box-shadow: 0 0 26px color-mix(in srgb, var(--sector-color) 48%, transparent);
+    display: grid;
+    place-items: center;
+  }
+
+  .sector-orbit-node span {
+    width: 1.55rem;
+    height: 1.55rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 0.74rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--sector-color), #22d3ee);
+  }
+
+  .sector-orbit-agent {
+    position: absolute;
+    left: 50%;
+    top: 52%;
+    z-index: 2;
+    transform: translate(-50%, -50%);
+    display: grid;
+    justify-items: center;
+    gap: 0.75rem;
+  }
+
+  .sector-orbit-avatar {
+    width: 9.75rem;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 50%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.13), rgba(255,255,255,0.02)), radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--sector-color) 32%, transparent), rgba(8,8,14,0.9) 68%);
+  }
+
+  .sector-orbit-avatar span {
+    font-size: 4.35rem;
+    filter: drop-shadow(0 12px 26px rgba(0,0,0,0.36));
+  }
+
+  .sector-orbit-badge {
+    min-width: 10rem;
+    border-radius: 0.75rem;
+    padding: 0.45rem 0.75rem;
+    text-align: center;
+    color: #1f2937;
+    background: #fff;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.28);
+  }
+
+  .sector-orbit-badge strong {
+    display: block;
+    color: color-mix(in srgb, var(--sector-color) 72%, #0ea5e9);
+    font-size: 1.55rem;
+    line-height: 1;
+  }
+
+  .sector-orbit-badge small {
+    display: block;
+    margin-top: 0.15rem;
+    color: #334155;
+    font-size: 0.58rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .sector-orbit-copy {
+    position: absolute;
+    z-index: 4;
+    display: grid;
+    gap: 1.2rem;
+    color: #eef2ff;
+    font-size: clamp(0.8rem, 1.3vw, 0.96rem);
+    font-weight: 700;
+    line-height: 1.16;
+  }
+
+  .sector-orbit-copy-left { left: 1.2rem; top: 25%; text-align: right; }
+  .sector-orbit-copy-right { right: 1.2rem; top: 25%; }
+
+  .sector-orbit-caption {
+    position: absolute;
+    left: 1.3rem;
+    right: 1.3rem;
+    bottom: 1.15rem;
+    z-index: 5;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 1rem;
+    padding: 1rem 1.15rem;
+    background: rgba(8,8,14,0.72);
+    backdrop-filter: blur(14px);
+  }
+
+  .sector-orbit-caption strong { display: block; color: #fff; font-size: 0.96rem; }
+  .sector-orbit-caption p { margin: 0.28rem 0 0; color: #a1a1aa; font-size: 0.84rem; line-height: 1.45; }
+
+  .sector-selector {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .sector-selector-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .sector-selector-grid button,
+  .sector-next {
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #fff;
+    cursor: pointer;
+    transition: transform .24s, border-color .24s, background .24s, box-shadow .24s;
+  }
+
+  .sector-selector-grid button {
+    min-height: 5.25rem;
+    border-radius: 1rem;
+    padding: 0.85rem;
+    text-align: left;
+    background: radial-gradient(circle at top left, color-mix(in srgb, var(--sector-color) 20%, transparent), rgba(255,255,255,0.035) 70%);
+  }
+
+  .sector-selector-grid button.is-active {
+    border-color: color-mix(in srgb, var(--sector-color) 70%, white 8%);
+    box-shadow: 0 0 28px color-mix(in srgb, var(--sector-color) 22%, transparent);
+    transform: translateY(-2px);
+  }
+
+  .sector-selector-grid button span { display: block; margin-bottom: 0.5rem; font-size: 1.35rem; }
+  .sector-selector-grid button strong { display: block; color: #d4d4d8; font-size: 0.76rem; line-height: 1.22; }
+
+  .sector-next {
+    min-width: 3.8rem;
+    border-radius: 1rem;
+    padding: 0 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    background: linear-gradient(135deg, #7c3aed, #0891b2);
+    box-shadow: 0 0 30px rgba(124,58,237,0.34);
+  }
+
+  .sector-next span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
   .avatar-page {
     min-height: 100svh;
     overflow-x: hidden;
@@ -212,6 +436,50 @@
   }
 
   @media (max-width: 760px) {
+    .templates-teaser-grid {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+
+    .sector-orbit-card {
+      min-height: 390px;
+      border-radius: 1.25rem;
+    }
+
+    .sector-orbit {
+      width: min(76%, 300px);
+      top: 42%;
+    }
+
+    .sector-orbit-copy {
+      display: none;
+    }
+
+    .sector-orbit-node {
+      width: 2.75rem;
+      height: 2.75rem;
+    }
+
+    .sector-orbit-avatar {
+      width: 7.75rem;
+    }
+
+    .sector-orbit-avatar span {
+      font-size: 3.35rem;
+    }
+
+    .sector-selector {
+      grid-template-columns: 1fr;
+    }
+
+    .sector-selector-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .sector-next {
+      min-height: 3.25rem;
+    }
+
     .avatar-page--desktop .avatar-shell {
       padding: 3rem 1rem;
     }

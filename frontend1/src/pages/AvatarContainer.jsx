@@ -5,7 +5,7 @@ import Navbar from '../components/Navbar'
 const VISION_API_URL = import.meta.env.VITE_VISION_API_URL || 'http://localhost:3000'
 const DEFAULT_BEY_AGENT_ID = '80cada4e-9219-424a-80d3-bd039ff00c4b'
 
-const syne = { fontFamily: 'Syne, system-ui, sans-serif', fontWeight: 800, letterSpacing: 0 }
+const syne = { fontFamily: 'system-ui, sans-serif', fontWeight: 800, letterSpacing: 0 }
 const grad = { background: 'linear-gradient(135deg,#a78bfa,#22d3ee)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }
 
 const INITIAL_VISION = {
@@ -287,8 +287,8 @@ function MissingAgent({ navigate }) {
       </p>
 
       <div className="bg-black/40 border border-white/[0.08] rounded-xl p-4 text-left w-full max-w-sm">
-        <p style={{ color: '#52525b', fontSize: '0.75rem', marginBottom: '0.5rem', fontFamily: 'monospace' }}>.env</p>
-        <code style={{ color: '#10b981', fontSize: '0.875rem', fontFamily: 'monospace' }}>
+        <p style={{ color: '#52525b', fontSize: '0.75rem', marginBottom: '0.5rem', fontFamily: 'system-ui, sans-serif' }}>.env</p>
+        <code style={{ color: '#10b981', fontSize: '0.875rem', fontFamily: 'system-ui, sans-serif' }}>
           VITE_BEY_AGENT_ID=<span style={{ color: '#71717a' }}>your_real_agent_id</span>
         </code>
       </div>

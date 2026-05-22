@@ -1,9 +1,10 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import AvatarSection from '../components/AvatarSection'
 
 /* ── helpers ─────────────────────────────────────── */
-const syne = { fontFamily: 'Syne, system-ui, sans-serif', fontWeight: 800, letterSpacing: '-0.02em' }
+const syne = { fontFamily: 'system-ui, sans-serif', fontWeight: 800, letterSpacing: '-0.02em' }
 const grad = { background: 'linear-gradient(135deg,#a78bfa,#22d3ee)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }
 const gradWarm = { background: 'linear-gradient(135deg,#a78bfa,#f0abfc,#22d3ee)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }
 
@@ -23,14 +24,102 @@ const FEATURES = [
 ]
 
 const TEMPLATES = [
-  { emoji: '🏫', label: 'Portineria Scolastica', id: 'portineria-scolastica', color: '#3b82f6' },
-  { emoji: '💼', label: 'Hiring & Screening',    id: 'hiring-screening',      color: '#8b5cf6' },
-  { emoji: '🏋️', label: 'Assistente Palestra',   id: 'palestra',              color: '#10b981' },
-  { emoji: '🩺', label: 'Studio Medico',         id: 'studio-medico',         color: '#f43f5e' },
+  {
+    emoji: '🏫',
+    label: 'Portineria Scolastica',
+    id: 'portineria-scolastica',
+    color: '#3b82f6',
+    payoff: 'Accoglienza studenti, genitori e personale sempre disponibile.',
+    nodes: ['Segreteria', 'Calendario', 'FAQ scuola', 'Comunicazioni', 'Orientamento', 'Documenti'],
+  },
+  {
+    emoji: '💼',
+    label: 'Hiring & Screening',
+    id: 'hiring-screening',
+    color: '#8b5cf6',
+    payoff: 'Pre-screening candidati, domande guidate e report per HR.',
+    nodes: ['CV parsing', 'Colloqui', 'Score HR', 'Onboarding', 'Agenda', 'Report'],
+  },
+  {
+    emoji: '🏋️',
+    label: 'Assistente Palestra',
+    id: 'palestra',
+    color: '#10b981',
+    payoff: 'Prenotazioni, abbonamenti e supporto clienti per il fitness.',
+    nodes: ['Booking corsi', 'Abbonamenti', 'Trainer', 'Promozioni', 'Check-in', 'Supporto'],
+  },
+  {
+    emoji: '🩺',
+    label: 'Studio Medico',
+    id: 'studio-medico',
+    color: '#f43f5e',
+    payoff: 'Gestione pazienti, appuntamenti e richieste ricorrenti.',
+    nodes: ['Agenda visite', 'Anamnesi', 'Promemoria', 'Documenti', 'Triage', 'Follow-up'],
+  },
 ]
+
+const ORBIT_POSITIONS = [
+  { left: '50%', top: '7%' },
+  { left: '83%', top: '23%' },
+  { left: '88%', top: '58%' },
+  { left: '62%', top: '86%' },
+  { left: '21%', top: '72%' },
+  { left: '13%', top: '34%' },
+]
+
+function SectorOrbit({ sector }) {
+  return (
+    <div className="sector-orbit-card" style={{ '--sector-color': sector.color }}>
+      <div className="sector-orbit-copy sector-orbit-copy-left">
+        <span>{sector.nodes[0]}</span>
+        <span>{sector.nodes[1]}</span>
+      </div>
+
+      <div className="sector-orbit">
+        <div className="sector-orbit-ring sector-orbit-ring-outer" />
+        <div className="sector-orbit-ring sector-orbit-ring-middle" />
+        <div className="sector-orbit-ring sector-orbit-ring-inner" />
+
+        {sector.nodes.map((node, index) => (
+          <div
+            key={node}
+            className="sector-orbit-node"
+            style={{ left: ORBIT_POSITIONS[index].left, top: ORBIT_POSITIONS[index].top }}
+          >
+            <span>{index + 1}</span>
+          </div>
+        ))}
+
+        <div className="sector-orbit-agent">
+          <div className="sector-orbit-avatar">
+            <span>{sector.emoji}</span>
+          </div>
+          <div className="sector-orbit-badge">
+            <strong>AURA</strong>
+            <small>{sector.label}</small>
+          </div>
+        </div>
+      </div>
+
+      <div className="sector-orbit-copy sector-orbit-copy-right">
+        <span>{sector.nodes[2]}</span>
+        <span>{sector.nodes[3]}</span>
+        <span>{sector.nodes[4]}</span>
+      </div>
+
+      <div className="sector-orbit-caption">
+        <strong>{sector.label}</strong>
+        <p>{sector.payoff}</p>
+      </div>
+    </div>
+  )
+}
 
 export default function Home() {
   const navigate = useNavigate()
+  const [activeTemplate, setActiveTemplate] = useState(0)
+  const selectedTemplate = TEMPLATES[activeTemplate]
+  const showNextTemplate = () => setActiveTemplate((activeTemplate + 1) % TEMPLATES.length)
 
   return (
     <div className="min-h-screen bg-[#08080e] text-white overflow-x-hidden">
@@ -56,8 +145,6 @@ export default function Home() {
             <h1 style={{ ...syne, fontSize:'clamp(2.4rem, 5.5vw, 4.2rem)', lineHeight:1.0, margin:0 }}>
               <span style={{ color:'#fff' }}>Automatizza</span><br />
               <span style={gradWarm}>i processi</span><br />
-              <span style={{ color:'#fff' }}>complessi</span><br />
-              <span style={{ color:'#3f3f50' }}>senza codice.</span>
             </h1>
 
             <p style={{ fontSize:'1.2rem', lineHeight:1.75, color:'#a1a1aa', maxWidth:440, margin:0 }}>
@@ -152,7 +239,7 @@ export default function Home() {
 
       {/* ── TEMPLATES TEASER ────────────────────────────────── */}
       <section style={{ padding:'8rem 1.5rem', borderTop:'1px solid rgba(255,255,255,0.05)' }}>
-        <div className="max-w-6xl mx-auto" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'5rem', alignItems:'center' }}>
+        <div className="max-w-6xl mx-auto templates-teaser-grid">
           <div>
             <p style={{ fontSize:'0.7rem', color:'#52525b', textTransform:'uppercase', letterSpacing:'0.2em', marginBottom:'1.25rem' }}>Template pronti</p>
             <h2 style={{ ...syne, fontSize:'clamp(2.5rem,4.5vw,3.75rem)', color:'#fff', marginBottom:'1.5rem' }}>
@@ -172,19 +259,36 @@ export default function Home() {
             </button>
           </div>
 
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'1rem' }}>
-            {TEMPLATES.map(t => (
+          <div className="sector-showcase">
+            <SectorOrbit sector={selectedTemplate} />
+
+            <div className="sector-selector">
+              <div className="sector-selector-grid">
+                {TEMPLATES.map((t, index) => (
+                  <button
+                    key={t.id}
+                    onClick={() => setActiveTemplate(index)}
+                    className={index === activeTemplate ? 'is-active' : ''}
+                    style={{ '--sector-color': t.color }}
+                  >
+                    <span>{t.emoji}</span>
+                    <strong>{t.label}</strong>
+                  </button>
+                ))}
+              </div>
+
               <button
-                key={t.id}
-                onClick={() => navigate(`/templates/${t.id}`)}
-                style={{ background:`radial-gradient(ellipse at top left, ${t.color}20 0%, rgba(8,8,14,0) 70%)`, border:`1px solid ${t.color}28`, borderRadius:'1.5rem', padding:'2rem', textAlign:'left', cursor:'pointer', transition:'all .25s' }}
-                onMouseEnter={e => { e.currentTarget.style.transform='translateY(-4px) scale(1.02)'; e.currentTarget.style.borderColor=`${t.color}60` }}
-                onMouseLeave={e => { e.currentTarget.style.transform=''; e.currentTarget.style.borderColor=`${t.color}28` }}
+                type="button"
+                onClick={showNextTemplate}
+                className="sector-next"
+                aria-label="Mostra settore successivo"
               >
-                <span style={{ fontSize:'2.5rem', display:'block', marginBottom:'1rem' }}>{t.emoji}</span>
-                <span style={{ fontSize:'0.875rem', fontWeight:600, color:'#d4d4d8', lineHeight:1.4 }}>{t.label}</span>
+                <span>Settore successivo</span>
+                <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
               </button>
-            ))}
+            </div>
           </div>
         </div>
       </section>
