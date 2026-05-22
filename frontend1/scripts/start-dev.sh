@@ -14,7 +14,7 @@ trap cleanup EXIT INT TERM
 npm run dev:backend &
 pids+=("$!")
 
-npm run dev &
+npm run dev:vite &
 pids+=("$!")
 
 printf "AURA frontend + vision backend avviati.\n"

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const syne = { fontFamily: 'Syne, system-ui, sans-serif', fontWeight: 800, letterSpacing: '-0.02em' }
+const syne = { fontFamily: 'system-ui, sans-serif', fontWeight: 800, letterSpacing: '-0.02em' }
 const grad = { background: 'linear-gradient(135deg,#a78bfa,#22d3ee)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }
 
 const ALL_SERVICES = [
@@ -95,18 +95,17 @@ export default function Dashboard() {
   const openSvc = ALL_SERVICES.find(s => s.id === activeSvc)
 
   return (
-    <div style={{ minHeight: '100vh', background: '#08080e', color: '#fff', fontFamily: 'DM Sans, system-ui, sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: '#08080e', color: '#fff', fontFamily: 'system-ui, sans-serif' }}>
 
       {/* ── SIDEBAR ────────────────────────────────────────── */}
       <aside style={{ position: 'fixed', top: 0, left: 0, bottom: 0, width: 240, background: 'rgba(255,255,255,0.02)', borderRight: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', padding: '1.5rem 1rem', zIndex: 40 }}>
 
         {/* Logo */}
         <button onClick={() => navigate('/')} style={{ display:'flex', alignItems:'center', gap:10, background:'none', border:'none', cursor:'pointer', marginBottom:'2.5rem', padding:'0.25rem 0.5rem' }}>
-          <div style={{ width:36, height:36, borderRadius:'50%', background:'linear-gradient(135deg,#7c3aed,#0891b2)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 0 20px rgba(124,58,237,0.4)', flexShrink:0 }}>
-            <svg viewBox="0 0 20 20" fill="white" width="16" height="16">
-              <circle cx="10" cy="10" r="3.2"/><circle cx="10" cy="3" r="1.6" opacity=".65"/><circle cx="10" cy="17" r="1.6" opacity=".65"/><circle cx="3" cy="10" r="1.6" opacity=".65"/><circle cx="17" cy="10" r="1.6" opacity=".65"/>
-            </svg>
-          </div>
+          <span
+            aria-hidden="true"
+            style={{ width:40, height:40, borderRadius:'0.875rem', backgroundImage:'url(/Logo_Aura_vett.png)', backgroundSize:'170%', backgroundPosition:'center 35%', boxShadow:'0 0 20px rgba(124,58,237,0.4)', flexShrink:0 }}
+          />
           <span style={{ ...syne, fontSize:'1.25rem' }}>
             <span style={{ color:'#fff' }}>AU</span><span style={grad}>RA</span>
           </span>

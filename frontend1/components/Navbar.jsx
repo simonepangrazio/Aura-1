@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 
-const syne = { fontFamily: 'Syne, system-ui, sans-serif', fontWeight: 800, letterSpacing: '-0.02em' }
+const syne = { fontFamily: 'system-ui, sans-serif', fontWeight: 800, letterSpacing: '-0.02em' }
 const grad = { background: 'linear-gradient(135deg,#a78bfa,#22d3ee)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }
 
 const NAV_LINKS = [
@@ -9,11 +9,11 @@ const NAV_LINKS = [
   { label: 'Richiedi Demo', path: '/demo' },
 ]
 
+const FRONTEND2_LOGIN_URL = 'http://localhost:3000/login'
+
 export default function Navbar() {
   const navigate       = useNavigate()
   const { pathname }   = useLocation()
-
-  const user = (() => { try { return JSON.parse(sessionStorage.getItem('aura_user')) } catch { return null } })()
 
   return (
     <header style={{ position:'fixed', inset:'0 0 auto 0', zIndex:50, padding:'1.25rem 1.5rem' }}>
@@ -22,14 +22,10 @@ export default function Navbar() {
 
           {/* Logo */}
           <button onClick={() => navigate('/')} style={{ display:'flex', alignItems:'center', gap:12, background:'none', border:'none', cursor:'pointer' }}>
-            <div style={{ position:'relative', width:36, height:36 }}>
-              <div style={{ position:'absolute', inset:0, borderRadius:'50%', background:'linear-gradient(135deg,#7c3aed,#0891b2)', filter:'blur(8px)', opacity:0.4 }} />
-              <div style={{ position:'relative', width:36, height:36, borderRadius:'50%', background:'linear-gradient(135deg,#7c3aed,#0891b2)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 0 20px rgba(124,58,237,0.4)' }}>
-                <svg viewBox="0 0 20 20" fill="white" width="16" height="16">
-                  <circle cx="10" cy="10" r="3.2"/><circle cx="10" cy="3" r="1.6" opacity=".65"/><circle cx="10" cy="17" r="1.6" opacity=".65"/><circle cx="3" cy="10" r="1.6" opacity=".65"/><circle cx="17" cy="10" r="1.6" opacity=".65"/>
-                </svg>
-              </div>
-            </div>
+            <span
+              aria-hidden="true"
+              style={{ width:44, height:44, borderRadius:'0.875rem', backgroundImage:'url(/Logo_Aura_vett.png)', backgroundSize:'170%', backgroundPosition:'center 35%', boxShadow:'0 0 24px rgba(124,58,237,0.35)', flexShrink:0 }}
+            />
             <span style={{ ...syne, fontSize:'1.35rem' }}>
               <span style={{ color:'#fff' }}>AU</span><span style={grad}>RA</span>
             </span>
@@ -53,26 +49,13 @@ export default function Navbar() {
 
           {/* Right CTAs */}
           <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-            {user ? (
-              <button onClick={() => navigate('/dashboard')}
-                style={{ display:'flex', alignItems:'center', gap:8, background:'rgba(255,255,255,0.06)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:'0.875rem', padding:'0.5rem 1rem 0.5rem 0.5rem', cursor:'pointer', color:'#d4d4d8', fontSize:'0.85rem', fontWeight:600 }}
-                onMouseEnter={e => e.currentTarget.style.background='rgba(255,255,255,0.1)'}
-                onMouseLeave={e => e.currentTarget.style.background='rgba(255,255,255,0.06)'}
-              >
-                <div style={{ width:28, height:28, borderRadius:'50%', background:'linear-gradient(135deg,#7c3aed,#0891b2)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'0.75rem', fontWeight:700 }}>
-                  {user.name?.charAt(0).toUpperCase()}
-                </div>
-                Dashboard
-              </button>
-            ) : (
-              <button onClick={() => navigate('/login')}
-                style={{ background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.1)', color:'#d4d4d8', fontSize:'0.875rem', fontWeight:600, padding:'0.625rem 1.25rem', borderRadius:'0.875rem', cursor:'pointer' }}
-                onMouseEnter={e => e.currentTarget.style.background='rgba(255,255,255,0.09)'}
-                onMouseLeave={e => e.currentTarget.style.background='rgba(255,255,255,0.05)'}
-              >
-                Accedi
-              </button>
-            )}
+            <button onClick={() => window.location.assign(FRONTEND2_LOGIN_URL)}
+              style={{ background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.1)', color:'#d4d4d8', fontSize:'0.875rem', fontWeight:600, padding:'0.625rem 1.25rem', borderRadius:'0.875rem', cursor:'pointer' }}
+              onMouseEnter={e => e.currentTarget.style.background='rgba(255,255,255,0.09)'}
+              onMouseLeave={e => e.currentTarget.style.background='rgba(255,255,255,0.05)'}
+            >
+              Accedi
+            </button>
             <button onClick={() => navigate('/start-building')}
               style={{ background:'linear-gradient(135deg,#7c3aed,#0891b2)', border:'none', color:'#fff', fontWeight:700, fontSize:'0.875rem', padding:'0.625rem 1.25rem', borderRadius:'0.875rem', cursor:'pointer', boxShadow:'0 0 24px rgba(124,58,237,0.3)' }}
               onMouseEnter={e => e.currentTarget.style.opacity='.85'}

@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "scripts/start-dev.sh",
+    "dev:vite": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -16,14 +17,15 @@
     "status": "ps aux | grep -E \"(node|vision_detector)\" | grep -v grep"
   },
   "dependencies": {
+    "@react-three/drei": "latest",
+    "@react-three/fiber": "latest",
+    "framer-motion": "latest",
+    "gsap": "latest",
+    "lucide-react": "^1.16.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-router-dom": "^7.15.0",
-    "three": "latest",
-    "@react-three/fiber": "latest",
-    "@react-three/drei": "latest",
-    "framer-motion": "latest",
-    "gsap": "latest"
+    "three": "latest"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Navbar from '../components/Navbar'
+import { sendContactRequest } from '../lib/contactRequests'
 
 const TOOLS = ['Ricerca file', 'Ricerca web', 'MCP', 'HTTP', 'Database', 'Email', 'Calendar']
 const LANGUAGES = ['Rilevamento automatico', 'Italiano', 'English', 'Français', 'Deutsch', 'Español']
@@ -16,6 +17,8 @@ export default function StartBuilding() {
     language: 'Rilevamento automatico',
   })
   const [deployed, setDeployed] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [submitError, setSubmitError] = useState('')
 
   const toggleTool = (tool) => {
     setForm(f => ({
@@ -24,9 +27,32 @@ export default function StartBuilding() {
     }))
   }
 
-  const handleDeploy = () => {
+  const handleDeploy = async () => {
     if (!form.name.trim()) return
-    setDeployed(true)
+    setSending(true)
+    setSubmitError('')
+
+    try {
+      await sendContactRequest({
+        type: 'start_building',
+        title: form.name,
+        details: {
+          agentName: form.name,
+          systemMessage: form.systemMessage,
+          outputRequirements: form.outputRequirements,
+          tools: form.tools,
+          model: form.model,
+          budget: form.budget,
+          budgetLabel: form.budget < 34 ? 'Economico' : form.budget < 67 ? 'Medio' : 'Alto',
+          language: form.language,
+        },
+      })
+      setDeployed(true)
+    } catch (error) {
+      setSubmitError(error.message)
+    } finally {
+      setSending(false)
+    }
   }
 
   if (deployed) {
@@ -221,12 +247,13 @@ export default function StartBuilding() {
           <div className="pt-6">
             <button
               onClick={handleDeploy}
-              disabled={!form.name.trim()}
+              disabled={!form.name.trim() || sending}
               className="w-full py-4 rounded-xl font-semibold text-sm transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-gradient-to-r from-violet-600 to-cyan-500 hover:from-violet-500 hover:to-cyan-400 text-white shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:shadow-[0_0_40px_rgba(139,92,246,0.5)]"
             >
-              Deploy Agent →
+              {sending ? 'Invio richiesta...' : 'Deploy Agent →'}
             </button>
             {!form.name.trim() && <p className="text-center text-xs text-zinc-600 mt-2">Inserisci un nome per abilitare il deploy</p>}
+            {submitError && <p className="text-center text-xs text-red-400 mt-2">{submitError}</p>}
           </div>
         </div>
 

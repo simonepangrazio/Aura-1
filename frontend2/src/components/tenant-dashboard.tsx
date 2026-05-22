@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
-import { Bot, CalendarClock, Code, Edit3, MonitorSmartphone, RefreshCcw, Settings, Wifi } from "lucide-react";
+import { Bot, CalendarClock, Code, Edit3, MonitorSmartphone, Play, RefreshCcw, Settings, Wifi } from "lucide-react";
 
 import { TenantShell } from "@/components/admin-shell";
 import {
@@ -38,6 +38,8 @@ import {
 import { useAuth } from "@/lib/use-auth";
 
 type ActiveTab = "agents" | "devices" | "sessions" | "embed" | "config";
+
+const KIOSK_BASE_URL = (process.env.NEXT_PUBLIC_KIOSK_BASE_URL || "http://localhost:5173").replace(/\/$/, "");
 
 export function TenantDashboard() {
   const { token, user, ready, logout } = useAuth("tenant_admin");
@@ -84,6 +86,15 @@ export function TenantDashboard() {
   const apiKeyByProvider = useMemo(() => new Map(apiKeys.map((apiKey) => [apiKey.provider, apiKey])), [apiKeys]);
   const primaryWidget = widgets[0];
   const primaryAgent = primaryWidget ? agentById.get(primaryWidget.agent_id) : agents[0];
+  const deviceByAgentId = useMemo(() => {
+    const map = new Map<string, Device>();
+    for (const device of devices) {
+      if (!map.has(device.agent_id)) {
+        map.set(device.agent_id, device);
+      }
+    }
+    return map;
+  }, [devices]);
   const embedSnippet =
     primaryWidget && primaryAgent
       ? `<!-- Beyond UI Widget -->
@@ -110,6 +121,24 @@ export function TenantDashboard() {
     { id: "embed", label: "Widget", icon: Code },
     { id: "config", label: "Config", icon: Settings },
   ] as const;
+
+  function kioskLaunchUrl(device: Device) {
+    const url = new URL(KIOSK_BASE_URL);
+    url.searchParams.set("device_id", device.id);
+    url.searchParams.set("device_token", device.device_token || "");
+    return url.toString();
+  }
+
+  function launchKiosk(agent: Agent) {
+    const device = deviceByAgentId.get(agent.id);
+    if (!device?.device_token) {
+      setActiveTab("devices");
+      setError("Nessun kiosk con token disponibile per questo agente. Crea o rigenera un device dalla tab Kiosk.");
+      return;
+    }
+
+    window.open(kioskLaunchUrl(device), "_blank", "noopener,noreferrer");
+  }
 
   return (
     <TenantShell user={user} onLogout={logout}>
@@ -153,9 +182,14 @@ export function TenantDashboard() {
             agent.n8n_webhook_url || "-",
             <RuntimeBadges key="runtime" agent={agent} apiKeyByProvider={apiKeyByProvider} />,
             <StatusBadge key="status" status={agent.is_active ? "active" : "disabled"} />,
-            <ActionButton key="actions" variant="secondary" onClick={() => setEditingAgent(agent)}>
-              <Edit3 size={14} />Edit
-            </ActionButton>,
+            <div key="actions" className="flex flex-wrap gap-2">
+              <ActionButton variant="secondary" onClick={() => launchKiosk(agent)}>
+                <Play size={14} />Avvia avatar
+              </ActionButton>
+              <ActionButton variant="secondary" onClick={() => setEditingAgent(agent)}>
+                <Edit3 size={14} />Edit
+              </ActionButton>
+            </div>,
           ])}
         />
       ) : null}

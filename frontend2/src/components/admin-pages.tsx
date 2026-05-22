@@ -9,6 +9,7 @@ import {
   CheckCircle2,
   KeyRound,
   MonitorSmartphone,
+  Play,
   Plus,
   QrCode,
   RefreshCcw,
@@ -78,6 +79,8 @@ import {
 import { useAuth } from "@/lib/use-auth";
 
 type LoadState = "idle" | "loading" | "loaded";
+
+const KIOSK_BASE_URL = (process.env.NEXT_PUBLIC_KIOSK_BASE_URL || "http://localhost:5173").replace(/\/$/, "");
 
 function AdminFrame({ children }: { children: (token: string) => ReactNode }) {
   const { token, user, ready, logout } = useAuth("super_admin");
@@ -688,6 +691,7 @@ export function AgentsPage() {
 function AgentsContent({ token }: { token: string }) {
   const [agents, setAgents] = useState<Agent[]>([]);
   const [tenants, setTenants] = useState<Tenant[]>([]);
+  const [devices, setDevices] = useState<Device[]>([]);
   const [editing, setEditing] = useState<Agent | null>(null);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -697,9 +701,10 @@ function AgentsContent({ token }: { token: string }) {
     setLoading(true);
     setError(null);
     try {
-      const [nextAgents, nextTenants] = await Promise.all([getAgents(token), getTenants(token)]);
+      const [nextAgents, nextTenants, nextDevices] = await Promise.all([getAgents(token), getTenants(token), getDevices(token)]);
       setAgents(nextAgents);
       setTenants(nextTenants);
+      setDevices(nextDevices);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Errore agents");
     } finally {
@@ -710,6 +715,33 @@ function AgentsContent({ token }: { token: string }) {
   useEffect(() => {
     queueMicrotask(() => void load());
   }, [load]);
+
+  const deviceByAgentId = useMemo(() => {
+    const map = new Map<string, Device>();
+    for (const device of devices) {
+      if (!map.has(device.agent_id)) {
+        map.set(device.agent_id, device);
+      }
+    }
+    return map;
+  }, [devices]);
+
+  function kioskLaunchUrl(device: Device) {
+    const url = new URL(KIOSK_BASE_URL);
+    url.searchParams.set("device_id", device.id);
+    url.searchParams.set("device_token", device.device_token || "");
+    return url.toString();
+  }
+
+  function launchKiosk(agent: Agent) {
+    const device = deviceByAgentId.get(agent.id);
+    if (!device?.device_token) {
+      setError("Nessun kiosk con token disponibile per questo agente. Crea o rigenera un device dalla sezione Devices.");
+      return;
+    }
+
+    window.open(kioskLaunchUrl(device), "_blank", "noopener,noreferrer");
+  }
 
   return (
     <>
@@ -730,6 +762,9 @@ function AgentsContent({ token }: { token: string }) {
             agent.language,
             <StatusBadge key="status" status={agent.is_active ? "active" : "disabled"} />,
             <div key="actions" className="flex flex-wrap gap-2">
+              <ActionButton variant="secondary" onClick={() => launchKiosk(agent)}>
+                <Play size={14} />Avvia avatar
+              </ActionButton>
               <ActionButton variant="secondary" onClick={() => setEditing(agent)}>Edit</ActionButton>
               <ActionButton variant="ghost" onClick={() => void updateAgent(token, agent.id, { is_active: !agent.is_active }).then(load)}>
                 {agent.is_active ? "Deactivate" : "Activate"}
