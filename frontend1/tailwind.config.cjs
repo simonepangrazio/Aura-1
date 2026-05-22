@@ -7,9 +7,9 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        display: ['Syne', 'system-ui', 'sans-serif'],
-        body: ['DM Sans', 'system-ui', 'sans-serif'],
-        sans: ['DM Sans', 'system-ui', 'sans-serif'],
+        display: ['system-ui', 'sans-serif'],
+        body: ['system-ui', 'sans-serif'],
+        sans: ['system-ui', 'sans-serif'],
       },
       fontSize: {
         '8xl': ['6rem', { lineHeight: '1' }],

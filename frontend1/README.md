@@ -80,4 +80,4 @@ src/
 - TailwindCSS 3
 - React Router DOM v7
 - Beyond Presence (avatar video AI iperrealistico)
-- Font: Syne (display) + DM Sans (body)
+- Font: system-ui, sans-serif
