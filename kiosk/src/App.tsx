@@ -3,8 +3,10 @@ import { DeviceSetupPage } from "./pages/DeviceSetupPage";
 import { KioskRuntimePage } from "./pages/KioskRuntimePage";
 import { authenticateDevice } from "./services/apiClient";
 import {
+  clearDeviceCredentialsFromUrl,
   clearDeviceCredentials,
   readDeviceCredentials,
+  readDeviceCredentialsFromUrl,
   saveDeviceCredentials,
 } from "./services/deviceStorage";
 import type { DeviceAuthResponse, DeviceCredentials } from "./types/kiosk";
@@ -12,8 +14,15 @@ import type { DeviceAuthResponse, DeviceCredentials } from "./types/kiosk";
 type AppPhase = "setup" | "authenticating" | "runtime";
 
 function App() {
+  const [initialCredentials] = useState(() => {
+    const urlCredentials = readDeviceCredentialsFromUrl();
+    return {
+      credentials: urlCredentials ?? readDeviceCredentials(),
+      shouldPersist: Boolean(urlCredentials),
+    };
+  });
   const [credentials, setCredentials] = useState<DeviceCredentials | null>(() =>
-    readDeviceCredentials(),
+    initialCredentials.credentials,
   );
   const [auth, setAuth] = useState<DeviceAuthResponse | null>(null);
   const [phase, setPhase] = useState<AppPhase>(credentials ? "authenticating" : "setup");
@@ -37,6 +46,7 @@ function App() {
         const response = await authenticateDevice(nextCredentials);
         if (shouldPersist) {
           saveDeviceCredentials(nextCredentials);
+          clearDeviceCredentialsFromUrl();
         }
         setCredentials(nextCredentials);
         setAuth(response);
@@ -69,7 +79,7 @@ function App() {
   useEffect(() => {
     if (!didBootRef.current && credentials) {
       didBootRef.current = true;
-      void connectDevice(credentials, false);
+      void connectDevice(credentials, initialCredentials.shouldPersist);
     }
 
     return () => {
@@ -77,7 +87,7 @@ function App() {
         window.clearTimeout(retryTimeoutRef.current);
       }
     };
-  }, [connectDevice, credentials]);
+  }, [connectDevice, credentials, initialCredentials.shouldPersist]);
 
   const handleSetupSubmit = useCallback(
     async (nextCredentials: DeviceCredentials) => {
