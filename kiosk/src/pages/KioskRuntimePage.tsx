@@ -332,6 +332,34 @@ export function KioskRuntimePage({
     };
   }, [disconnectLiveKit]);
 
+  useEffect(() => {
+    const handleUnload = () => {
+      if (activeSession) {
+        const url = `${kioskEnv.apiBaseUrl}/sessions/end`;
+        const payload = JSON.stringify({
+          session_id: activeSession.session_id,
+          device_id: credentials.deviceId,
+          device_token: credentials.deviceToken,
+        });
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon(url, new Blob([payload], { type: "application/json" }));
+        } else {
+          void fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: payload,
+            keepalive: true,
+          });
+        }
+      }
+    };
+
+    window.addEventListener("beforeunload", handleUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleUnload);
+    };
+  }, [activeSession, credentials]);
+
   const statusLabel = getStatusLabel(machine.status, Boolean(videoTrack));
   const shouldShowActiveStage =
     machine.status === "STARTING" || machine.status === "ACTIVE" || machine.status === "ENDING";

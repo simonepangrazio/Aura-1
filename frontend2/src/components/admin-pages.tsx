@@ -799,11 +799,51 @@ function AgentForm({
           <TextInput label="Agent Name" value={form.name} onChange={(name) => setForm({ ...form, name })} required />
           <TextInput label="Beyond Avatar ID" value={form.beyond_avatar_id || ""} onChange={(beyond_avatar_id) => setForm({ ...form, beyond_avatar_id })} />
           <TextInput label="Language" value={form.language} onChange={(language) => setForm({ ...form, language })} required />
-          <SelectInput label="STT Provider" value={form.stt_provider || "browser"} onChange={(stt_provider) => setForm({ ...form, stt_provider })} options={["browser", "openai", "gemini"]} />
-          <TextInput label="STT Model" value={form.stt_model || ""} onChange={(stt_model) => setForm({ ...form, stt_model })} />
-          <SelectInput label="TTS Provider" value={form.voice_provider || "openai"} onChange={(voice_provider) => setForm({ ...form, voice_provider, tts_model: voice_provider === "gemini" ? "gemini-2.5-flash-preview-tts" : "gpt-4o-mini-tts" })} options={["openai", "gemini"]} />
-          <TextInput label="TTS Model" value={form.tts_model || ""} onChange={(tts_model) => setForm({ ...form, tts_model })} />
-          <TextInput label="Voice ID" value={form.voice_id || ""} onChange={(voice_id) => setForm({ ...form, voice_id })} />
+          <SelectInput
+            label="STT Provider"
+            value={form.stt_provider || "browser"}
+            onChange={(stt_provider) => setForm({
+              ...form,
+              stt_provider,
+              stt_model: stt_provider === "openai" ? "whisper-1" : stt_provider === "gemini" ? "gemini-2.5-flash" : "default"
+            })}
+            options={["browser", "openai", "gemini"]}
+          />
+          <SelectInput
+            label="STT Model"
+            value={form.stt_model || (form.stt_provider === "openai" ? "whisper-1" : form.stt_provider === "gemini" ? "gemini-2.5-flash" : "default")}
+            onChange={(stt_model) => setForm({ ...form, stt_model })}
+            options={
+              form.stt_provider === "openai"
+                ? ["whisper-1"]
+                : form.stt_provider === "gemini"
+                ? ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash", "default"]
+                : ["default"]
+            }
+          />
+          <SelectInput
+            label="TTS Provider"
+            value={form.voice_provider || "openai"}
+            onChange={(voice_provider) => setForm({
+              ...form,
+              voice_provider,
+              tts_model: voice_provider === "gemini" ? "gemini-2.5-flash-preview-tts" : "gpt-4o-mini-tts",
+              voice_id: voice_provider === "gemini" ? "Kore" : "alloy"
+            })}
+            options={["openai", "gemini"]}
+          />
+          <SelectInput
+            label="TTS Model"
+            value={form.tts_model || (form.voice_provider === "gemini" ? "gemini-2.5-flash-preview-tts" : "gpt-4o-mini-tts")}
+            onChange={(tts_model) => setForm({ ...form, tts_model })}
+            options={form.voice_provider === "gemini" ? ["gemini-2.5-flash-preview-tts", "gemini-2.0-flash-exp", "gemini-1.5-flash"] : ["gpt-4o-mini-tts", "tts-1", "tts-1-hd"]}
+          />
+          <SelectInput
+            label="Voice ID"
+            value={form.voice_id || (form.voice_provider === "gemini" ? "Kore" : "alloy")}
+            onChange={(voice_id) => setForm({ ...form, voice_id })}
+            options={form.voice_provider === "gemini" ? ["Kore", "Puck", "Charon", "Fenrir", "Aoede"] : ["alloy", "echo", "fable", "onyx", "nova", "shimmer", "coral"]}
+          />
         </div>
         <TextareaInput label="Description" value={form.description || ""} onChange={(description) => setForm({ ...form, description })} />
         <TextareaInput label="System Prompt" value={form.system_prompt || ""} onChange={(system_prompt) => setForm({ ...form, system_prompt })} />

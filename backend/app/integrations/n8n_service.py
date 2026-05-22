@@ -22,7 +22,14 @@ async def call_n8n_webhook(webhook_url: str | None, user_text: str, session_id: 
         logger.error("Error calling N8N webhook: %s", exc)
         return "Scusa, in questo momento il workflow di prenotazione non e raggiungibile."
 
-    data = response.json()
-    if isinstance(data, dict):
-        return str(data.get("response") or data.get("text") or data)
-    return str(data)
+    try:
+        data = response.json()
+        if isinstance(data, dict):
+            return str(data.get("response") or data.get("text") or data)
+        return str(data)
+    except Exception as exc:
+        logger.warning("N8N response was not JSON, falling back to raw text: %s", exc)
+        raw_text = response.text.strip()
+        if raw_text.startswith("<html") or raw_text.startswith("<!DOCTYPE"):
+            return "Scusa, il server ha risposto con una pagina non valida."
+        return raw_text or "Scusa, non ho ricevuto alcuna risposta."

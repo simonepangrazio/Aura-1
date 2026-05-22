@@ -1,8 +1,11 @@
 from datetime import datetime
+import logging
 from uuid import UUID, uuid4
 
 from fastapi import HTTPException, WebSocket
 from sqlalchemy.orm import Session
+
+logger = logging.getLogger(__name__)
 
 from app.auth.service import is_super_admin
 from app.core.config import settings
@@ -53,6 +56,22 @@ def create_message(
     )
     db.add(db_message)
     return db_message
+
+
+def _trigger_livekit_room_deletion(room_name: str | None) -> None:
+    if not room_name:
+        return
+    import threading
+    import asyncio
+    from app.services.livekit_service import delete_livekit_room
+    
+    def run():
+        try:
+            asyncio.run(delete_livekit_room(room_name))
+        except Exception as exc:
+            logger.error("Error in delete_livekit_room thread for room %s: %s", room_name, exc)
+            
+    threading.Thread(target=run, daemon=True).start()
 
 
 def _api_key_value(db: Session, tenant_id: UUID, provider: str | None) -> str | None:
@@ -253,6 +272,35 @@ def start_session(
             },
         )
 
+    # Automatically end any previous active sessions for this device, widget, or agent/tenant
+    # to avoid orphans and concurrent session errors on reloads
+    active_statuses = ["starting", "active"]
+    existing_active_query = db.query(DbSession).filter(DbSession.status.in_(active_statuses))
+    if device:
+        existing_active_query = existing_active_query.filter(DbSession.device_id == device.id)
+    elif widget:
+        existing_active_query = existing_active_query.filter(DbSession.widget_id == widget.id)
+    else:
+        existing_active_query = existing_active_query.filter(DbSession.agent_id == agent.id)
+
+    existing_active_sessions = existing_active_query.all()
+    for s in existing_active_sessions:
+        s.status = "ended"
+        s.ended_at = datetime.utcnow()
+        if s.device:
+            s.device.status = "online"
+        _trigger_livekit_room_deletion(s.livekit_room_name)
+        create_event(
+            db,
+            s.id,
+            "session_ended_replaced",
+            {
+                "reason": "replaced_by_new_session",
+                "ended_at": s.ended_at.isoformat(),
+            },
+        )
+    db.commit()
+
     session_id = uuid4()
     room_name = f"session_{session_id}"
 
@@ -387,6 +435,7 @@ def end_session(
     if db_session.device:
         db_session.device.status = "online"
         db_session.device.last_seen = datetime.utcnow()
+    _trigger_livekit_room_deletion(db_session.livekit_room_name)
     create_event(db, db_session.id, "session_ended", {"ended_at": db_session.ended_at.isoformat()})
     db.commit()
     db.refresh(db_session)
@@ -474,6 +523,29 @@ async def handle_session_websocket(
             user_text = await websocket.receive_text()
             ai_response = await process_user_message(db, db_session, user_text)
             await websocket.send_text(ai_response)
-    except Exception:
-        create_event(db, db_session.id, "error", {"message": "websocket disconnected"})
+    except Exception as exc:
+        logger.exception("Exception in handle_session_websocket for session %s: %s", session_id, exc)
+        create_event(db, db_session.id, "error", {"message": f"websocket disconnected: {str(exc)}"})
         db.commit()
+    finally:
+        try:
+            db_session = db.query(DbSession).filter(DbSession.id == session_id).first()
+            if db_session and db_session.status in ("starting", "active"):
+                db_session.status = "ended"
+                db_session.ended_at = datetime.utcnow()
+                if db_session.device:
+                    db_session.device.status = "online"
+                    db_session.device.last_seen = datetime.utcnow()
+                _trigger_livekit_room_deletion(db_session.livekit_room_name)
+                create_event(
+                    db,
+                    db_session.id,
+                    "session_ended",
+                    {
+                        "reason": "websocket_closed",
+                        "ended_at": db_session.ended_at.isoformat(),
+                    },
+                )
+                db.commit()
+        except Exception as e:
+            logger.error("Error cleaning up session on websocket disconnect: %s", e)
