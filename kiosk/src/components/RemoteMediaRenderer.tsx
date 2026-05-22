@@ -19,6 +19,7 @@ export function RemoteVideo({ track }: RemoteVideoProps) {
     }
 
     const element = track.attach() as HTMLVideoElement;
+    element.muted = true;
     element.autoplay = true;
     element.playsInline = true;
     element.className = "h-full w-full object-cover";

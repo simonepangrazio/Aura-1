@@ -60,6 +60,7 @@ services:
         API_PROXY_ORIGIN: http://backend:8000
     environment:
       - API_PROXY_ORIGIN=http://backend:8000
+      - HOSTNAME=0.0.0.0
     ports:
       - "3000:3000"
 
