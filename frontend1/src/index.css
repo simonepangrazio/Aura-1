@@ -62,6 +62,171 @@
   .section-sm { padding-top: 5rem; padding-bottom: 5rem; }
 }
 
+@layer components {
+  .avatar-page {
+    min-height: 100svh;
+    overflow-x: hidden;
+  }
+
+  .avatar-shell {
+    min-height: 100svh;
+  }
+
+  .avatar-stage {
+    min-height: 600px;
+    border-radius: 1rem;
+  }
+
+  .avatar-page--desktop .avatar-frame {
+    min-height: 680px;
+  }
+
+  .avatar-page--phone .avatar-shell,
+  .avatar-page--totem .avatar-shell {
+    width: 100%;
+    max-width: none;
+    padding: 0;
+  }
+
+  .avatar-page--phone .avatar-hero,
+  .avatar-page--totem .avatar-hero {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .avatar-page--phone .avatar-wrap,
+  .avatar-page--totem .avatar-wrap {
+    min-height: 100svh;
+    display: flex;
+  }
+
+  .avatar-page--phone .avatar-frame,
+  .avatar-page--totem .avatar-frame {
+    width: 100%;
+    min-height: 100svh;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    background: #05060a;
+  }
+
+  .avatar-page--phone .avatar-status,
+  .avatar-page--totem .avatar-status {
+    position: fixed;
+    left: max(0.875rem, env(safe-area-inset-left));
+    right: max(0.875rem, env(safe-area-inset-right));
+    top: max(0.875rem, env(safe-area-inset-top));
+    z-index: 20;
+    margin: 0;
+  }
+
+  .avatar-page--phone .avatar-status > div,
+  .avatar-page--totem .avatar-status > div {
+    max-width: none;
+    border-radius: 0.875rem;
+    padding: 0.75rem 0.875rem;
+    backdrop-filter: blur(18px);
+  }
+
+  .avatar-page--phone .avatar-stage,
+  .avatar-page--totem .avatar-stage {
+    width: 100%;
+    min-height: 100svh;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .avatar-page--phone .avatar-gate,
+  .avatar-page--totem .avatar-gate {
+    padding: 6.25rem 1rem 6rem;
+  }
+
+  .avatar-page--phone .avatar-actions,
+  .avatar-page--totem .avatar-actions {
+    position: fixed;
+    left: max(1rem, env(safe-area-inset-left));
+    right: max(1rem, env(safe-area-inset-right));
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    z-index: 20;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .avatar-page--phone .avatar-actions button,
+  .avatar-page--totem .avatar-actions button {
+    width: 100%;
+    min-height: 3rem;
+  }
+
+  .avatar-page--phone .avatar-stage iframe,
+  .avatar-page--totem .avatar-stage iframe {
+    min-height: 100svh;
+  }
+
+  .avatar-page--phone .avatar-stage > .absolute.left-4,
+  .avatar-page--totem .avatar-stage > .absolute.left-4 {
+    top: auto;
+    left: 1rem;
+    right: 1rem;
+    bottom: calc(5.25rem + env(safe-area-inset-bottom));
+  }
+
+  .avatar-page--phone .avatar-stage > .absolute.left-4 > div,
+  .avatar-page--totem .avatar-stage > .absolute.left-4 > div {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .avatar-page--phone h3 {
+    font-size: 1.35rem !important;
+  }
+
+  .avatar-page--totem .avatar-frame {
+    max-width: min(100vw, calc(100svh * 9 / 16));
+    margin: 0 auto;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 24px 80px rgba(0,0,0,0.55);
+  }
+
+  .avatar-page--totem .avatar-status {
+    left: 50%;
+    right: auto;
+    width: min(calc(100vw - 2rem), calc(100svh * 9 / 16 - 2rem));
+    transform: translateX(-50%);
+  }
+
+  .avatar-page--totem .avatar-actions {
+    left: 50%;
+    right: auto;
+    width: min(calc(100vw - 2rem), calc(100svh * 9 / 16 - 2rem));
+    transform: translateX(-50%);
+  }
+
+  .avatar-page--totem .avatar-gate {
+    padding-inline: 2rem;
+  }
+
+  @media (max-width: 760px) {
+    .avatar-page--desktop .avatar-shell {
+      padding: 3rem 1rem;
+    }
+
+    .avatar-page--desktop .avatar-frame {
+      padding: 1rem;
+      border-radius: 1rem;
+    }
+
+    .avatar-page--desktop .avatar-stage {
+      min-height: 520px;
+    }
+  }
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -72,4 +237,3 @@ input[type='range'] { height: 4px; border-radius: 2px; cursor: pointer; }
 
 /* Select arrow */
 select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E"); background-position: right 12px center; background-repeat: no-repeat; background-size: 16px; padding-right: 40px !important; }
-

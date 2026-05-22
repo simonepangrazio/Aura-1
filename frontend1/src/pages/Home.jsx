@@ -37,17 +37,17 @@ export default function Home() {
       <Navbar />
 
       {/* ── HERO ────────────────────────────────────────────── */}
-      <section className="relative flex items-center pt-40 pb-32 lg:pt-52 lg:pb-40 px-6">
+      <section className="relative flex items-center pt-32 pb-20 lg:pt-40 lg:pb-28 px-6">
         {/* ambient blobs */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div style={{ position:'absolute', top:'20%', left:'25%', width:700, height:700, background:'radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 70%)', transform:'translate(-50%,-50%)' }} />
           <div style={{ position:'absolute', top:'45%', right:'10%', width:500, height:500, background:'radial-gradient(circle, rgba(8,145,178,0.08) 0%, transparent 70%)' }} />
         </div>
 
-        <div className="relative max-w-6xl mx-auto w-full grid lg:grid-cols-2 gap-20 items-center">
+        <div className="relative max-w-6xl mx-auto w-full grid lg:grid-cols-2 gap-14 items-center">
 
           {/* left */}
-          <div className="flex flex-col gap-9">
+          <div className="flex flex-col gap-7">
             <div className="inline-flex w-fit items-center gap-2.5 rounded-full px-5 py-2.5 text-xs text-zinc-400" style={{ background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)' }}>
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               Piattaforma No-Code — AI Agent Orchestration
@@ -93,9 +93,9 @@ export default function Home() {
       </section>
 
       {/* ── HOW IT WORKS ────────────────────────────────────── */}
-      <section className="px-6" style={{ padding:'8rem 1.5rem', borderTop:'1px solid rgba(255,255,255,0.05)' }}>
+      <section className="px-6" style={{ padding:'5.25rem 1.5rem', borderTop:'1px solid rgba(255,255,255,0.05)' }}>
         <div className="max-w-6xl mx-auto">
-          <div style={{ textAlign:'center', marginBottom:'5rem' }}>
+          <div style={{ textAlign:'center', marginBottom:'3.25rem' }}>
             <p style={{ fontSize:'0.7rem', color:'#52525b', textTransform:'uppercase', letterSpacing:'0.2em', marginBottom:'1rem' }}>Come funziona</p>
             <h2 style={{ ...syne, fontSize:'clamp(2.5rem,5vw,4rem)', color:'#fff', margin:0 }}>
               Dal briefing al tuo Agent<br />
@@ -122,9 +122,9 @@ export default function Home() {
       </section>
 
       {/* ── FEATURES ────────────────────────────────────────── */}
-      <section style={{ padding:'8rem 1.5rem', borderTop:'1px solid rgba(255,255,255,0.05)' }}>
+      <section style={{ padding:'5.25rem 1.5rem', borderTop:'1px solid rgba(255,255,255,0.05)' }}>
         <div className="max-w-6xl mx-auto">
-          <div style={{ textAlign:'center', marginBottom:'5rem' }}>
+          <div style={{ textAlign:'center', marginBottom:'3.25rem' }}>
             <p style={{ fontSize:'0.7rem', color:'#52525b', textTransform:'uppercase', letterSpacing:'0.2em', marginBottom:'1rem' }}>Tecnologia</p>
             <h2 style={{ ...syne, fontSize:'clamp(2.5rem,5vw,4rem)', color:'#fff', margin:0 }}>
               Tutto ciò che ti serve,<br />
@@ -151,8 +151,8 @@ export default function Home() {
       </section>
 
       {/* ── TEMPLATES TEASER ────────────────────────────────── */}
-      <section style={{ padding:'8rem 1.5rem', borderTop:'1px solid rgba(255,255,255,0.05)' }}>
-        <div className="max-w-6xl mx-auto" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'5rem', alignItems:'center' }}>
+      <section style={{ padding:'5.25rem 1.5rem', borderTop:'1px solid rgba(255,255,255,0.05)' }}>
+        <div className="max-w-6xl mx-auto" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'3.5rem', alignItems:'center' }}>
           <div>
             <p style={{ fontSize:'0.7rem', color:'#52525b', textTransform:'uppercase', letterSpacing:'0.2em', marginBottom:'1.25rem' }}>Template pronti</p>
             <h2 style={{ ...syne, fontSize:'clamp(2.5rem,4.5vw,3.75rem)', color:'#fff', marginBottom:'1.5rem' }}>
@@ -190,14 +190,14 @@ export default function Home() {
       </section>
 
       {/* ── DEMO CALLOUT ────────────────────────────────────── */}
-      <section style={{ padding:'8rem 1.5rem', borderTop:'1px solid rgba(255,255,255,0.05)' }}>
+      <section style={{ padding:'5.25rem 1.5rem', borderTop:'1px solid rgba(255,255,255,0.05)' }}>
         <div className="max-w-6xl mx-auto">
-          <div style={{ background:'linear-gradient(135deg, rgba(124,58,237,0.12) 0%, rgba(8,8,14,0) 50%, rgba(8,145,178,0.08) 100%)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:'2.5rem', padding:'5rem', position:'relative', overflow:'hidden' }}>
+          <div style={{ background:'linear-gradient(135deg, rgba(124,58,237,0.12) 0%, rgba(8,8,14,0) 50%, rgba(8,145,178,0.08) 100%)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:'2.5rem', padding:'3.75rem', position:'relative', overflow:'hidden' }}>
             {/* decorative orbs */}
             <div style={{ position:'absolute', top:-80, left:-80, width:300, height:300, background:'radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%)', pointerEvents:'none' }} />
             <div style={{ position:'absolute', bottom:-80, right:-80, width:250, height:250, background:'radial-gradient(circle, rgba(8,145,178,0.12) 0%, transparent 70%)', pointerEvents:'none' }} />
 
-            <div style={{ position:'relative', display:'grid', gridTemplateColumns:'1fr 1fr', gap:'5rem', alignItems:'center' }}>
+            <div style={{ position:'relative', display:'grid', gridTemplateColumns:'1fr 1fr', gap:'3.5rem', alignItems:'center' }}>
               {/* text */}
               <div>
                 <div style={{ display:'inline-flex', alignItems:'center', gap:'0.5rem', background:'rgba(124,58,237,0.12)', border:'1px solid rgba(124,58,237,0.25)', borderRadius:999, padding:'0.5rem 1.125rem', fontSize:'0.75rem', color:'#a78bfa', marginBottom:'1.75rem' }}>
@@ -256,7 +256,7 @@ export default function Home() {
       </section>
 
       {/* ── FINAL CTA ───────────────────────────────────────── */}
-      <section style={{ padding:'8rem 1.5rem', borderTop:'1px solid rgba(255,255,255,0.05)', textAlign:'center' }}>
+      <section style={{ padding:'5.5rem 1.5rem', borderTop:'1px solid rgba(255,255,255,0.05)', textAlign:'center' }}>
         <div className="max-w-3xl mx-auto">
           <h2 style={{ ...syne, fontSize:'clamp(3rem,6vw,5.5rem)', color:'#fff', lineHeight:1.0, marginBottom:'1.5rem' }}>
             Pronto a configurare<br />

@@ -18,6 +18,35 @@ const INITIAL_VISION = {
   pitch: null,
 }
 
+function getViewportProfile() {
+  if (typeof window === 'undefined') return 'desktop'
+
+  const { innerWidth, innerHeight } = window
+  const ratio = innerWidth / Math.max(innerHeight, 1)
+
+  if (ratio < 0.72 && innerHeight >= 760) return 'totem'
+  if (innerWidth <= 760) return 'phone'
+  return 'desktop'
+}
+
+function useViewportProfile() {
+  const [profile, setProfile] = useState(getViewportProfile)
+
+  useEffect(() => {
+    const update = () => setProfile(getViewportProfile())
+    update()
+    window.addEventListener('resize', update)
+    window.addEventListener('orientationchange', update)
+
+    return () => {
+      window.removeEventListener('resize', update)
+      window.removeEventListener('orientationchange', update)
+    }
+  }, [])
+
+  return profile
+}
+
 function visionUrl(path) {
   return new URL(path, VISION_API_URL).toString()
 }
@@ -187,7 +216,7 @@ function VisionGate({ vision, visionReady, hasAgent }) {
   }
 
   return (
-    <div className="w-full min-h-[600px] rounded-2xl overflow-hidden border border-white/[0.05] bg-[#0d0d16] flex flex-col items-center justify-center p-8 text-center">
+    <div className="avatar-stage avatar-gate w-full overflow-hidden border border-white/[0.05] bg-[#0d0d16] flex flex-col items-center justify-center p-8 text-center">
       <div className="relative mb-8">
         <div
           className="absolute inset-0 -m-8 rounded-full border animate-ping"
@@ -237,7 +266,7 @@ function VisionGate({ vision, visionReady, hasAgent }) {
 
 function MissingAgent({ navigate }) {
   return (
-    <div className="w-full min-h-[600px] rounded-2xl overflow-hidden border border-white/[0.05] bg-gradient-to-br from-violet-950/40 to-cyan-950/20 flex flex-col items-center justify-center p-10">
+    <div className="avatar-stage w-full overflow-hidden border border-white/[0.05] bg-gradient-to-br from-violet-950/40 to-cyan-950/20 flex flex-col items-center justify-center p-10">
       <div className="relative mb-10">
         <div className="absolute inset-0 -m-8 rounded-full border border-violet-500/10 animate-ping" style={{ animationDuration: '3s' }} />
         <div className="absolute inset-0 -m-16 rounded-full border border-cyan-500/10 animate-ping" style={{ animationDuration: '4s', animationDelay: '0.5s' }} />
@@ -291,6 +320,7 @@ function MissingAgent({ navigate }) {
 
 export default function AvatarContainer() {
   const navigate = useNavigate()
+  const viewportProfile = useViewportProfile()
   const BEY_AGENT_ID = import.meta.env.VITE_BEY_AGENT_ID || DEFAULT_BEY_AGENT_ID
   const hasAgent = Boolean(BEY_AGENT_ID && BEY_AGENT_ID !== 'demo')
   const [vision, setVision] = useState(INITIAL_VISION)
@@ -353,17 +383,18 @@ export default function AvatarContainer() {
   const visionReady = vision.connected && vision.detectorOnline && vision.lookingAtCamera
   const avatarReady = hasAgent && visionReady
   const avatarUrl = useMemo(() => (hasAgent ? `https://bey.chat/${BEY_AGENT_ID}` : null), [BEY_AGENT_ID, hasAgent])
+  const isImmersive = viewportProfile === 'phone' || viewportProfile === 'totem'
 
   return (
-    <div className="min-h-screen bg-[#08080e] text-white">
-      <Navbar />
+    <div className={`avatar-page min-h-screen bg-[#08080e] text-white avatar-page--${viewportProfile}`}>
+      {!isImmersive && <Navbar />}
 
-      <div className="max-w-7xl mx-auto px-6 py-20">
-        <div className="text-center mb-12">
+      <div className="avatar-shell max-w-7xl mx-auto px-6 py-20">
+        <div className="avatar-hero text-center mb-12">
           <p style={{ fontSize: '0.7rem', color: '#52525b', textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: '1rem' }}>
             Avatar Beyond Presence
           </p>
-          <h1 style={{ ...syne, fontSize: 'clamp(2.5rem,5vw,4rem)', color: '#fff', marginBottom: '1.5rem' }}>
+          <h1 style={{ ...syne, fontSize: '3.4rem', color: '#fff', marginBottom: '1.5rem' }}>
             Il tuo <span style={grad}>artificial human</span> è pronto
           </h1>
           <p style={{ fontSize: '1.1rem', color: '#71717a', lineHeight: 1.8, maxWidth: '600px', margin: '0 auto' }}>
@@ -371,7 +402,7 @@ export default function AvatarContainer() {
           </p>
         </div>
 
-        <div className="relative">
+        <div className="avatar-wrap relative">
           <div className="pointer-events-none absolute inset-0 overflow-hidden">
             <div
               style={{
@@ -396,13 +427,13 @@ export default function AvatarContainer() {
             />
           </div>
 
-          <div className="relative bg-gradient-to-br from-violet-950/20 to-cyan-950/10 rounded-3xl p-8 border border-white/[0.07]">
-            <div className="mb-6 flex justify-center">
+          <div className="avatar-frame relative bg-gradient-to-br from-violet-950/20 to-cyan-950/10 rounded-3xl p-8 border border-white/[0.07]">
+            <div className="avatar-status mb-6 flex justify-center">
               <VisionStatusPanel vision={vision} visionReady={visionReady} hasAgent={hasAgent} />
             </div>
 
             {hasAgent && avatarReady ? (
-              <div className="relative w-full h-full min-h-[600px] rounded-2xl overflow-hidden border border-white/[0.05] bg-black/20">
+              <div className="avatar-stage relative w-full h-full overflow-hidden border border-white/[0.05] bg-black/20">
                 <div className="absolute left-4 top-4 z-10">
                   <VisionStatusPanel vision={vision} visionReady={visionReady} hasAgent={hasAgent} compact />
                 </div>
@@ -411,10 +442,10 @@ export default function AvatarContainer() {
                   allow="camera; microphone; fullscreen"
                   allowFullScreen
                   className="w-full h-full absolute inset-0"
-                  style={{ border: 'none', minHeight: '600px' }}
+                  style={{ border: 'none' }}
                   title="AURA Avatar"
                 />
-                <div className="absolute inset-0 pointer-events-none rounded-2xl ring-1 ring-inset ring-white/10" />
+                <div className="absolute inset-0 pointer-events-none ring-1 ring-inset ring-white/10" />
               </div>
             ) : hasAgent ? (
               <VisionGate vision={vision} visionReady={visionReady} hasAgent={hasAgent} />
@@ -423,7 +454,7 @@ export default function AvatarContainer() {
             )}
           </div>
 
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
+          <div className="avatar-actions mt-8 flex flex-wrap justify-center gap-4">
             <button
               onClick={() => navigate('/dashboard')}
               style={{
