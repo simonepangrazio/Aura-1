@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import { SCENARIOS } from './Templates'
+import { sendContactRequest } from '../lib/contactRequests'
 
 const FULL_SPECS = {
   'portineria-scolastica': {
@@ -261,6 +262,8 @@ export default function ScenarioDetail() {
   const navigate = useNavigate()
   const [requestStep, setRequestStep] = useState('details')
   const [requestForm, setRequestForm] = useState(() => createInitialRequestForm(id))
+  const [sendingRequest, setSendingRequest] = useState(false)
+  const [requestError, setRequestError] = useState('')
 
   const scenario = SCENARIOS.find(s => s.id === id)
   const specs = FULL_SPECS[id]
@@ -312,11 +315,41 @@ export default function ScenarioDetail() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const submitRequest = (event) => {
+  const submitRequest = async (event) => {
     event.preventDefault()
     if (!canSubmitRequest) return
-    setRequestStep('success')
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    setSendingRequest(true)
+    setRequestError('')
+
+    try {
+      await sendContactRequest({
+        type: 'scenario',
+        title: scenario.title,
+        replyTo: requestForm.email,
+        details: {
+          scenarioId: id,
+          scenarioTitle: scenario.title,
+          organization: requestForm.organization,
+          contactName: requestForm.contactName,
+          email: requestForm.email,
+          phone: requestForm.phone,
+          channels: requestForm.channels,
+          launchWindow: requestForm.launchWindow,
+          notes: requestForm.notes,
+          scenarioSpecifications: requestForm.scenario,
+          includedUseCases: specs.useCases.map(useCase => useCase.title),
+          supportedIntegrations: specs.integrations,
+          setupTime: specs.setup,
+          languages: specs.languages,
+        },
+      })
+      setRequestStep('success')
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } catch (error) {
+      setRequestError(error.message)
+    } finally {
+      setSendingRequest(false)
+    }
   }
 
   const renderScenarioField = (field) => {
@@ -584,16 +617,17 @@ export default function ScenarioDetail() {
               <div className="pt-2">
                 <button
                   type="submit"
-                  disabled={!canSubmitRequest}
+                  disabled={!canSubmitRequest || sendingRequest}
                   className={`w-full py-4 rounded-xl font-semibold text-sm transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-gradient-to-r ${a.btn} text-white`}
                 >
-                  Invia richiesta configurata →
+                  {sendingRequest ? 'Invio richiesta...' : 'Invia richiesta configurata →'}
                 </button>
                 {!canSubmitRequest && (
                   <p className="text-center text-xs text-zinc-600 mt-2">
                     Compila organizzazione, referente ed email per inviare la richiesta
                   </p>
                 )}
+                {requestError && <p className="text-center text-xs text-red-400 mt-2">{requestError}</p>}
               </div>
             </form>
 

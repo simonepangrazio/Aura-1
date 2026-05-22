@@ -54,8 +54,8 @@ export default function Home() {
             </div>
 
             <h1 style={{ ...syne, fontSize:'clamp(2.4rem, 5.5vw, 4.2rem)', lineHeight:1.0, margin:0 }}>
-              <span style={{ color:'#fff' }}>Automatizza i</span><br />
-              <span style={gradWarm}>processi</span><br />
+              <span style={{ color:'#fff' }}>Automatizza</span><br />
+              <span style={gradWarm}>i processi</span><br />
               <span style={{ color:'#fff' }}>complessi</span><br />
               <span style={{ color:'#3f3f50' }}>senza codice.</span>
             </h1>
@@ -289,11 +289,10 @@ export default function Home() {
       <footer style={{ borderTop:'1px solid rgba(255,255,255,0.05)', padding:'2.5rem 1.5rem' }}>
         <div className="max-w-6xl mx-auto" style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:'1rem' }}>
           <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-            <div style={{ width:32, height:32, borderRadius:'50%', background:'linear-gradient(135deg,#7c3aed,#0891b2)', display:'flex', alignItems:'center', justifyContent:'center' }}>
-              <svg viewBox="0 0 20 20" fill="white" width="15" height="15">
-                <circle cx="10" cy="10" r="3.2"/><circle cx="10" cy="3" r="1.6" opacity=".65"/><circle cx="10" cy="17" r="1.6" opacity=".65"/><circle cx="3" cy="10" r="1.6" opacity=".65"/><circle cx="17" cy="10" r="1.6" opacity=".65"/>
-              </svg>
-            </div>
+            <span
+              aria-hidden="true"
+              style={{ width:34, height:34, borderRadius:'0.75rem', backgroundImage:'url(/Logo_Aura_vett.png)', backgroundSize:'170%', backgroundPosition:'center 35%', boxShadow:'0 0 18px rgba(124,58,237,0.28)', flexShrink:0 }}
+            />
             <span style={{ ...syne, fontSize:'1rem' }}>
               <span style={{ color:'#fff' }}>AU</span>
               <span style={grad}>RA</span>

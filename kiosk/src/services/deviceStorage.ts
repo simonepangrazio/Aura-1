@@ -14,6 +14,18 @@ export function readDeviceCredentials(): DeviceCredentials | null {
   return { deviceId, deviceToken };
 }
 
+export function readDeviceCredentialsFromUrl(): DeviceCredentials | null {
+  const params = new URLSearchParams(window.location.search);
+  const deviceId = params.get("device_id")?.trim();
+  const deviceToken = params.get("device_token")?.trim();
+
+  if (!deviceId || !deviceToken) {
+    return null;
+  }
+
+  return { deviceId, deviceToken };
+}
+
 export function saveDeviceCredentials(credentials: DeviceCredentials): void {
   window.localStorage.setItem(DEVICE_ID_KEY, credentials.deviceId.trim());
   window.localStorage.setItem(DEVICE_TOKEN_KEY, credentials.deviceToken.trim());
@@ -22,4 +34,11 @@ export function saveDeviceCredentials(credentials: DeviceCredentials): void {
 export function clearDeviceCredentials(): void {
   window.localStorage.removeItem(DEVICE_ID_KEY);
   window.localStorage.removeItem(DEVICE_TOKEN_KEY);
+}
+
+export function clearDeviceCredentialsFromUrl(): void {
+  const url = new URL(window.location.href);
+  url.searchParams.delete("device_id");
+  url.searchParams.delete("device_token");
+  window.history.replaceState({}, document.title, `${url.pathname}${url.search}${url.hash}`);
 }
